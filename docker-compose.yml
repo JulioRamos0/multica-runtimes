@@ -1,0 +1,71 @@
+services:
+  multica-core:
+    image: ${REGISTRY}/multica:latest
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./multica/Dockerfile
+    container_name: multica-core
+    hostname: multica-core
+
+  multica-agy:
+    depends_on:
+      - multica-core
+    image: ${REGISTRY}/multica-agy
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./agy/Dockerfile
+      args:
+        REGISTRY: ${REGISTRY}
+    container_name: multica-agy-test
+    hostname: multica-agy-test
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - multica_agy:/home/multica
+
+  multica-claude:
+    depends_on:
+      - multica-core
+    image: ${REGISTRY}/multica-claude
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./claude/Dockerfile
+      args:
+        REGISTRY: ${REGISTRY}
+    container_name: multica-claude-test
+    hostname: multica-claude
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - multica_claude:/home/multica
+
+  multica-copilot:
+    depends_on:
+      - multica-core
+    image: ${REGISTRY}/multica-copilot
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./copilot/Dockerfile
+      args:
+        REGISTRY: ${REGISTRY}
+    container_name: multica-copilot-test
+    hostname: multica-copilot
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - multica_copilot:/home/multica
+
+volumes:
+  multica_agy:
+  multica_claude:
+  multica_copilot:
