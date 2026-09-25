@@ -5,9 +5,10 @@ RUN curl -fsSL https://antigravity.google/cli/install.sh | bash
 RUN echo 'export PATH="/home/multica/.local/bin:$PATH"' >> ~/.bashrc
 ENV PATH="/home/multica/.local/bin:${PATH}"
 
+USER root
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
+USER multica
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/bin/bash"]
